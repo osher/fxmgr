@@ -127,8 +127,7 @@ This example assumes `test/util.js` which exposes `setup` and `teardown` that
 run the target server in a `child_process`. 
 (`e2e-helper` is an example of a package you can use to do it).
 
-
-`./test/my-cool-person-client.js`
+`./test/GET.person.{id}.js`
 
 ```javascript
 const Should = require('should')
@@ -161,7 +160,7 @@ describe('my cool person server', () => {
     })
 
     describe('when hit with an id that is is found in cache', () => {
-      request(`${SUT}/person/${persons.johnSnow.id}) //because everybody remembers John Snow...
+      request(`${SUT}/person/${persons.johnSnow.id}`) //because everybody remembers John Snow...
       .responds({
         status: 200,
         body: {
@@ -173,7 +172,7 @@ describe('my cool person server', () => {
     })
 
     describe('when hit with an id that is in DB and not in cache', () => {
-      request(`${SUT}/person/${persons.johnDoe.id}) //because nobody remembers John Doe...
+      request(`${SUT}/person/${persons.johnDoe.id}`) //because nobody remembers John Doe...
       .responds({
         status: 200,
         body: {
@@ -197,11 +196,11 @@ describe('my cool person server', () => {
 
 ## Roadmap
 [v] 0.6.x - This is the preliminary version. Tested manually. Works, however 
-    violent. Could be much more friendly.
+    violent - i.e could be much more friendly with its errors.
 [ ] 0.8.x - will focus in adding tests, CI, linting, coverage.
 [ ] 1.0.x - will be released with focus on user-experience - i.e user-input 
     validations and more friendly errors.
-    API changes may occur up until this version.
+    API form changes may occur up until this version.
 
 ## Backlog
 Anything from the backlog that will be ready for a version - will be released
@@ -212,6 +211,6 @@ with it.
       desired state 
 - redis adapter implements only dataType `strings`. Need to support `hashes`,
   `lists`, `sets`, and `sortedSets`
-- add an sql adapter implementation, probably based on knex
+- add an sql adapter implementation, probably based on `knex`
 
 
