@@ -9,18 +9,41 @@ itself, you should install it as a local dev-dependency.
 npm i fxmgr --save-dev
 ```
 
+Currently, it supports `mongodb` and `redis`. However, mind that if you use any
+of them - you'll have to install `redis` or `mongodb` by yourself, as those are
+peer-dependencies, and are not installed by default.
+
 ## Usage
 
 ### 1. Describe your data fixtures
 
-`./test/fx/persons.js':
+`./test/fx/persons.js`:
 
 ```javascript
 module.exports = require('fxmgr').fixture({
   entity: 'person',
+  stores: {
+    db: {
+      type: 'mongo',
+      defaultCase: 'testData',
+      toStoredForm: ({fname, lname, id}) => ({ fname, lname, id}),
+      saveAs: 'doc',
+    },
+    cache: {
+      type: 'redis',
+      dataType: 'strings',
+      defaultCase: 'reservedEmpty',
+      toStoredForm: ({fname, lname, id}) => ({ key: `person:${id}`, value: JSON.stringify({id, fname, lname}),
+      saveAs: 'cache',
+    },
+  },
   cases: {
     noSuch: {
-      '~': { db: 'reseredEmpty', cache: 'reservedEmpty' },
+      '~': { 
+        //<store-name>:  <case-type for this entity in the store>
+        db: 'reseredEmpty',
+        cache: 'reservedEmpty',
+      },
       id: 9900000,
     },
     johnDoe: {
@@ -42,21 +65,6 @@ module.exports = require('fxmgr').fixture({
       lname: 'Cidade',
     }
   },
-  stores: {
-    db: {
-      type: 'mongo',
-      defaultCase: 'testData',
-      toStoredForm: ({fname, lname, id}) => ({ fname, lname, id}),
-      saveAs: 'doc',
-    },
-    cache: {
-      type: 'redis',
-      dataType: 'strings',
-      defaultCase: 'reservedEmpty',
-      toStoredForm: ({fname, lname, id}) => ({ key: `person:${id}`, value: JSON.stringify({id, fname, lname}),
-      saveAs: 'cache',      
-    },
-  },
 })
 ```
 
@@ -64,20 +72,21 @@ What are case types?
 
   - `reservedEmpty`
      - ids that should be free in the DB
-     - either to test 404, or to test entity creations.
-  - `testData` 
-     - entities that should be in the db for the test to work. 
-     - used to be read or to be updated.
-     - created on setup and remove in the end.
+     - either to test 404, or to test entity creations
+     - are removed in the begining of the test, and at end of the test
+  - `testData`
+     - entities that should be in the db for the test to work
+     - used to be read or to be updated
+     - created on setup and removed at the end
   - `mustExist` 
-     - entitis that must be in the DB, but are owned by the environment. 
-     - the state of these entries is not known to the fixture.
-     - does not try to set them up, nor to clean them up.
+     - entitis that must be in the DB, but are owned by the environment
+     - the desired state of these entries is NOT known to the fixture
+     - does not try to set them up, nor to clean them up
      - instead - they are validated to be found on the db
   - `mustEql`
-     - entities that must be in the DB, but are owned by the environment.
-     - the state of these entries is known to the fixture.
-     - does not tyr to set them up
+     - entities that must be in the DB, but are owned by the environment
+     - the desired state of these entries IS known to the fixture
+     - does not try to set them up, nor to clean them up
      - they are validated against the desired state specified in the fixture
 
 
@@ -116,11 +125,12 @@ module.exports = {
 
 This example assumes `test/util.js` which exposes `setup` and `teardown` that 
 run the target server in a `child_process`. 
-(`e2e-helper` is an example of a tool you can use to do it).
+(`e2e-helper` is an example of a package you can use to do it).
+
 
 `./test/my-cool-person-client.js`
 
-```
+```javascript
 const Should = require('should')
 const { 
   beforeAll,
