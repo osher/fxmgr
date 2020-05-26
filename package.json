@@ -1,0 +1,44 @@
+{
+  "name": "fxmgr",
+  "version": "0.6.0",
+  "description": "fixture-setup helper, designed mainly for bdd test-runners, (but not exclusively)",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/osher/fxmgr.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "keywords": [
+    "e2e",
+    "end-to-end",
+    "tests",
+    "setup",
+    "teardown",
+    "db-fixtures"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/osher/fxmgr/issues"
+  },
+  "homepage": "https://github.com/osher/fxmgr#readme",
+  "peerDependencies": {
+    "mongodb": "^3.5.7",
+    "redis": "^3.0.2"
+  },
+  "devDependencies": {
+    "mongodb": "^3.5.7",
+    "redis": "^3.0.2"
+  },
+  "dependencies": {
+    "bluebird": "^3.7.2"
+  },
+  "scripts": {
+    "test": "mocha"
+  }
+}
