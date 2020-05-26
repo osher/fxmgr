@@ -165,7 +165,7 @@ describe('my cool person server', () => {
         status: 200,
         body: {
           'should include lname and fname of the queried entity': body => {
-            Should(body).have.properties( persons.johnDoe.doc )
+            Should(body).have.properties( persons.johnSnow.doc )
           },
         },
       })
@@ -182,12 +182,12 @@ describe('my cool person server', () => {
         },
         and: {
           'should update the entry in cache': done => {
-             client.get(persons.johnDoe.cache.key, (err, cached) => {
-               if (err) return done(err);
-               Should(cached).eql(persons.johnDoe.cache.value);
-             })
-          }
-        }
+            client.get(persons.johnDoe.cache.key, (err, cached) => {
+              if (err) return done(err);
+              Should(cached).eql(persons.johnDoe.cache.value);
+            })
+          },
+        },
       })
     })
   })

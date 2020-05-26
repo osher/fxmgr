@@ -1,6 +1,6 @@
 {
   "name": "fxmgr",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "fixture-setup helper, designed mainly for bdd test-runners, (but not exclusively)",
   "main": "lib/index.js",
   "directories": {
