@@ -1,6 +1,8 @@
 name: ci
 
-on: pull_request
+on:
+  push:
+    branches: [ master ]
 
 jobs:
   lint:
@@ -44,3 +46,15 @@ jobs:
         with:
           name: ci-results.os-${{ matrix.os }}.node-${{ matrix.node }}.mongo-${{ matrix.mongo }}.redis-${{ matrix.redis }}
           path: ci-results.tar.gz
+  cd:
+    runs-on: ubuntu-latest
+    needs: ci
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: versi
+        run: ./node_modules/.bin/versi
+      - name: publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.PACKAGE_PUBLISH_TOKEN}}
