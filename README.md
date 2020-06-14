@@ -1,5 +1,10 @@
 # fxmgr - fixture manager for e2e tests
 
+Fixture managr for integration and end-to-end tests.
+
+## status
+[![Actions Status](https://github.com/osher/fxmgr/workflows/ci-cron-for-dependencies/badge.svg)](https://github.com/osher/fxmgr/actions)
+
 ## installation
 
 `fxmgr` is designed to be a test helper. Unless your project is a test suite by
@@ -26,20 +31,20 @@ module.exports = require('fxmgr').fixture({
     db: {
       type: 'mongo',
       defaultCase: 'testData',
-      toStoredForm: ({fname, lname, id}) => ({ fname, lname, id}),
+      toStoredForm: ({ fname, lname, id }) => ({ fname, lname, id }),
       saveAs: 'doc',
     },
     cache: {
       type: 'redis',
       dataType: 'strings',
       defaultCase: 'reservedEmpty',
-      toStoredForm: ({fname, lname, id}) => ({ key: `person:${id}`, value: JSON.stringify({id, fname, lname}),
+      toStoredForm: ({ fname, lname, id }) => ({ key: `person:${id}`, value: JSON.stringify({ id, fname, lname }) }),
       saveAs: 'cache',
     },
   },
   cases: {
     noSuch: {
-      '~': { 
+      '~': {
         //<store-name>:  <case-type for this entity in the store>
         db: 'reseredEmpty',
         cache: 'reservedEmpty',
@@ -48,7 +53,7 @@ module.exports = require('fxmgr').fixture({
     },
     johnDoe: {
       '~': { db: 'testData', cache: 'reservedEmpty' },
-      id: 9000001
+      id: 9000001,
       fname: 'John',
       lname: 'Doe',
     },
@@ -63,7 +68,7 @@ module.exports = require('fxmgr').fixture({
       id: 1,
       fname: 'John',
       lname: 'Cidade',
-    }
+    },
   },
 })
 ```
@@ -78,7 +83,7 @@ What are case types?
      - entities that should be in the db for the test to work
      - used to be read or to be updated
      - created on setup and removed at the end
-  - `mustExist` 
+  - `mustExist`
      - entitis that must be in the DB, but are owned by the environment
      - the desired state of these entries is NOT known to the fixture
      - does not try to set them up, nor to clean them up
@@ -123,17 +128,17 @@ module.exports = {
 
 ### 3. Use your setup in tests
 
-This example assumes `test/util.js` which exposes `setup` and `teardown` that 
-run the target server in a `child_process`. 
+This example assumes `test/util.js` which exposes `setup` and `teardown` that
+run the target server in a `child_process`.
 (`e2e-helper` is an example of a package you can use to do it).
 
 `./test/GET.person.{id}.js`
 
 ```javascript
 const Should = require('should')
-const { 
+const {
   beforeAll,
-  afterAll, 
+  afterAll,
   //mongo: { collection }, // - if we were doing POST/PUT requests, we'd want to see how the DB is changed
   redis: { client },       //   but here we do want to see how the cache is affected
   fx: { persons },
@@ -195,22 +200,20 @@ describe('my cool person server', () => {
 ```
 
 ## Roadmap
-[v] 0.6.x - This is the preliminary version. Tested manually. Works, however 
+[v] 0.6.x - This is the preliminary version. Tested manually. Works, however
     violent - i.e could be much more friendly with its errors.
 [ ] 0.8.x - will focus in adding tests, CI, linting, coverage.
-[ ] 1.0.x - will be released with focus on user-experience - i.e user-input 
+[ ] 1.0.x - will be released with focus on user-experience - i.e user-input
     validations and more friendly errors.
     API form changes may occur up until this version.
 
 ## Backlog
 Anything from the backlog that will be ready for a version - will be released
 with it.
-- a built-in cli tool that lets you run 
+- a built-in cli tool that lets you run
    - `fxmgr seed` - to initiate an env
    - `fxmgr setup` - to run setup, and `fxmgr cleanup`, to help you restore a
-      desired state 
+      desired state
 - redis adapter implements only dataType `strings`. Need to support `hashes`,
   `lists`, `sets`, and `sortedSets`
 - add an sql adapter implementation, probably based on `knex`
-
-

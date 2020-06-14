@@ -1,6 +1,6 @@
 {
   "name": "fxmgr",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "fixture-setup helper, designed mainly for bdd test-runners, (but not exclusively)",
   "main": "lib/index.js",
   "directories": {
@@ -32,13 +32,24 @@
     "redis": "^3.0.2"
   },
   "devDependencies": {
+    "eslint": "^7.2.0",
+    "eslint-min": "^0.8.3",
+    "mocha": "^8.0.1",
     "mongodb": "^3.5.7",
-    "redis": "^3.0.2"
+    "nyc": "^15.1.0",
+    "redis": "^3.0.2",
+    "versi": "^0.6.5"
   },
   "dependencies": {
     "bluebird": "^3.7.2"
   },
+  "eslintConfig": {
+    "extends": "./node_modules/eslint-min"
+  },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "cover": "nyc mocha --reporter dot",
+    "lint": "eslint .",
+    "ci": "npm run lint && npm run test && npm run cover"
   }
 }

@@ -1,0 +1,59 @@
+name: ci
+
+on: pull_request
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - { name: checkout , uses: actions/checkout@v2 }
+      - { name: lint     , uses: stefanoeb/eslint-action@1.0.2 }
+
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: lint
+    strategy:
+      matrix:
+        os:   [ubunti, windows]
+        node: [13, 12, 10]
+        mongo: [4, 3]
+        redis: [5, 4]
+    steps:
+      - { name: checkout                    , uses: actions/checkout@v2 }
+      - name: node v${{ matrix.node }}
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: ${{ matrix.node }}
+      - name: mongo start
+        uses: supercharge/mongodb-github-action@1.3.0
+        with:
+          mongodb-version: ${{ matrix.mongo }}
+      - name: redis start
+        uses: supercharge/redis-github-action@1.1.0
+        with:
+          redis-version: ${{ matrix.redis }}
+      - { name: env-info                    , run: 'npx envinfo' }
+      - { name: install                     , run: 'npm i' }
+      - { name: test                        , run: 'npm test' }
+      - { name: cover                       , run: 'npm run cover' }
+      - { name: archive                     , run: 'tar -czvf ci-results.tar.gz coverage' }
+      - name: save
+        uses: actions/upload-artifact@v1
+        with:
+          name: ci-results.os-${{ matrix.os }}.node-${{ matrix.node }}.mongo-${{ matrix.mongo }}.redis-${{ matrix.redis }}
+          path: ci-results.tar.gz
+  cd:
+    runs-on: ubuntu-latest
+    if: github.ref == 'master' && !github.head_ref
+    needs: ci
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: versi
+        run: ./node_modules/.bin/versi
+      - name: publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.PACKAGE_PUBLISH_TOKEN}}
