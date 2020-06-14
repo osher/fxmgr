@@ -1,2 +1,5 @@
 package-lock.json
 node_modules
+.eslintcache
+coverage
+.nyc_output

@@ -1,0 +1,3 @@
+reporter: [ html, lcovonly, json, json-summary, text]
+include: [lib,  bin, config.js]
+all: true
