@@ -7,7 +7,7 @@ jobs:
   ci:
     strategy:
       matrix:
-        os:           [ ubunti, windows ]
+        os:           [ ubuntu ] #, windows ] - does not support containers yet :(
         node:         [ 13, 12, 10 ]
         mongo:        [ 4, 3 ]
         redis:        [ 5, 4 ]
