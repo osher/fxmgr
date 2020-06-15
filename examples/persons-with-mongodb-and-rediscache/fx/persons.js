@@ -1,18 +1,19 @@
-module.exports = require('../../') //i.e - require('fxmgr')
+module.exports = require('../../../') //i.e - require('fxmgr')
 .fixture({
   entity: 'person',
   stores: {
     db: {
       type: 'mongo',
       defaultCase: 'testData',
-      toStoredForm: ({ fname, lname, id }) => ({ fname, lname, id }),
+      toStoredForm: ({ fname, lname, id }) => ({ fname, lname, _id: id }),
       saveAs: 'doc',
     },
     cache: {
       type: 'redis',
       dataType: 'strings',
       defaultCase: 'reservedEmpty',
-      toStoredForm: ({ fname, lname, id }) => ({ key: `person:${id}`, value: JSON.stringify({ id, fname, lname }) }),
+      toStoredForm: ({ fname, lname, id }) =>
+        ({ key: `person:${id}`, value: JSON.stringify({ _id: id, fname, lname }) }),
       saveAs: 'cache',
     },
   },
@@ -20,7 +21,7 @@ module.exports = require('../../') //i.e - require('fxmgr')
     noSuch: {
       '~': {
         //<store-name>:  <case-type for this entity in the store>
-        db: 'reseredEmpty',
+        db: 'reservedEmpty',
         cache: 'reservedEmpty',
       },
       id: 9900000,
