@@ -6,7 +6,7 @@ const exec = (cmd, opts) => new Promise(
 const mongo = require('../lib/test-db-mongo')
 
 describe('e2e examples', () => {
-  describe('persons - no test runner, with mongodb and rediscache stores', () => {
+  describe('persons - no test runner, with mongodb and redis stores', () => {
     describe('when ran without seeding', () => {
       const cwd = './examples/persons-with-mongodb-and-rediscache'
       const ctx = {}
@@ -87,6 +87,26 @@ describe('e2e examples', () => {
           ].join('\n'),
         })
       })
+    })
+  })
+
+  describe('entities - mocha test runner, with redis as db store', () => {
+    const cwd = 'examples/few-entities-with-only-redis-and-mocha'
+    const cmd = `node ./node_modules/mocha/bin/mocha --config ${cwd}/.mocharc.yaml --reporter min`
+    const ctx = {}
+    before(async () => {
+      //act
+      try {
+        ctx.test = await exec(cmd)
+      } catch (e) {
+        ctx.err = e
+      }
+    })
+
+    it('should not fail', () => Should.not.exist(ctx.err))
+
+    it('should execute the suite', () => {
+      Should(ctx.test.stdout).match(/2 passing/)
     })
   })
 })

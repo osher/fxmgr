@@ -3,7 +3,8 @@
 Fixture managr for integration and end-to-end tests.
 
 ## status
-[![Actions Status](https://github.com/osher/fxmgr/workflows/ci-cron-for-dependencies/badge.svg)](https://github.com/osher/fxmgr/actions)
+![master-ci+cd](https://github.com/osher/fxmgr/workflows/master-ci+cd/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/osher/fxmgr/badge.svg?branch=master)](https://coveralls.io/github/osher/fxmgr?branch=master)
 
 ## installation
 
@@ -100,13 +101,14 @@ What are case types?
 `./test/fx/index.js`, assuming the fixture above, and a config with entries
 for redis and mongo.
 
-This example uses the `config` package, however, you can do it anyhow you like.
+This example uses the `config` package, and expect the config to expose the
+configs for both mongo and redis as root keys, however, you can do it anyhow you
+like...
 
 ```javascript
 const { redis, mongo } = require('fxmgr')
+const { redis: redisConfig, mongo: mongoConfig } = require('config')
 
-const redisConfig = require('config').redis
-const mongoConfig = require('config').mongo
 const persons = require('./persons')
 
 const fxRedis = redis(redisConfig).useData({
@@ -120,8 +122,9 @@ module.exports = {
   mongo: fxMongo,
   redis: fxRedis,
   fx: { persons },
-  beforeAll: () => Promise.all( [fxMongo, fxRedis].map(fx => fx.beforeAll()),
-  afterAll: () => Promise.all( [fxMogno), fxRedis].map(fx => fx.afterAll()),
+  seed: () => Promise.all([fxMongo, fxRedis].map(fx => fx.seed())),
+  beforeAll: () => Promise.all([fxMongo, fxRedis].map(fx => fx.beforeAll())),
+  afterAll: () => Promise.all([fxMongo, fxRedis].map(fx => fx.afterAll())),
 }
 
 ```
@@ -140,7 +143,7 @@ const {
   beforeAll,
   afterAll,
   //mongo: { collection }, // - if we were doing POST/PUT requests, we'd want to see how the DB is changed
-  redis: { client },       //   but here we do want to see how the cache is affected
+  redis           ,       //   but here we do want to see how the cache is affected
   fx: { persons },
 } = require('./fx')
 const { setup: runSvr, teardown: stopSvr } = require('./util')
@@ -186,11 +189,9 @@ describe('my cool person server', () => {
           },
         },
         and: {
-          'should update the entry in cache': done => {
-            client.get(persons.johnDoe.cache.key, (err, cached) => {
-              if (err) return done(err);
-              Should(cached).eql(persons.johnDoe.cache.value);
-            })
+          'should update the entry in cache': async () => {
+            const cached = await redis.client.get(persons.johnDoe.cache.key)
+            Should(cached).eql(persons.johnDoe.cache.value)
           },
         },
       })
@@ -199,11 +200,19 @@ describe('my cool person server', () => {
 })
 ```
 
+## examples
+
+Please check the examples provided here. They work - they are ran within our CI.
+
+[here]('./examples')
+
 ## Roadmap
-[v] 0.6.x - This is the preliminary version. Tested manually. Works, however
+`[v]` 0.6.x - This is the preliminary version. Tested manually. Works, however
     violent - i.e could be much more friendly with its errors.
-[ ] 0.8.x - will focus in adding tests, CI, linting, coverage.
-[ ] 1.0.x - will be released with focus on user-experience - i.e user-input
+
+`[ ]` 0.8.x - will focus in adding tests, CI, linting, coverage.
+
+`[ ]` 1.0.x - will be released with focus on user-experience - i.e user-input
     validations and more friendly errors.
     API form changes may occur up until this version.
 
