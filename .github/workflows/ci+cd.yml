@@ -69,7 +69,7 @@ jobs:
                 $COMMIT_MSG
             "
           else
-            echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc && publish
+            echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc && npm publish
           fi
         env:
           NPM_TOKEN: ${{ secrets.PACKAGE_PUBLISH_TOKEN }}
