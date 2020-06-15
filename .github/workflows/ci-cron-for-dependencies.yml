@@ -7,10 +7,12 @@ jobs:
   ci:
     strategy:
       matrix:
-        os:   [ubunti, windows]
-        node: [13, 12, 10]
-        mongo: [4, 3]
-        redis: [5, 4]
+        os:           [ ubunti, windows ]
+        node:         [ 13, 12, 10 ]
+        mongo:        [ 4, 3 ]
+        redis:        [ 5, 4 ]
+    runs-on:          ${{ matrix.os }}-latest
+    timeout-minutes: 10
     steps:
       - { name: checkout                    , uses: actions/checkout@v2 }
       - name: node v${{ matrix.node }}

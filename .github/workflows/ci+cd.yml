@@ -6,24 +6,24 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+    runs-on:          ubuntu-latest
+    timeout-minutes:  10
     steps:
-      - { name: checkout , uses: actions/checkout@v2 }
-      - { name: lint     , uses: stefanoeb/eslint-action@1.0.2 }
+      - { name: checkout                    , uses: actions/checkout@v2       }
+      - { name: lint                        , uses: stefanoeb/eslint-action@1.0.2 }
 
   ci:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: lint
+    needs:            lint
     strategy:
       matrix:
-        os:   [ubunti, windows]
-        node: [13, 12, 10]
-        mongo: [4, 3]
-        redis: [5, 4]
+        os:           [ ubuntu, windows ]
+        node:         [ 13, 12, 10 ]
+        mongo:        [ 4, 3 ]
+        redis:        [ 5, 4 ]
+    runs-on:          ${{ matrix.os }}-latest
+    timeout-minutes:  10
     steps:
-      - { name: checkout                    , uses: actions/checkout@v2 }
+      - { name: checkout                    , uses: actions/checkout@v2       }
       - name: node v${{ matrix.node }}
         uses: actions/setup-node@v2-beta
         with:
@@ -36,10 +36,10 @@ jobs:
         uses: supercharge/redis-github-action@1.1.0
         with:
           redis-version: ${{ matrix.redis }}
-      - { name: env-info                    , run: 'npx envinfo' }
-      - { name: install                     , run: 'npm i' }
-      - { name: test                        , run: 'npm test' }
-      - { name: cover                       , run: 'npm run cover' }
+      - { name: env-info                    , run: 'npx envinfo'              }
+      - { name: install                     , run: 'npm i'                    }
+      - { name: test                        , run: 'npm test'                 }
+      - { name: cover                       , run: 'npm run cover'            }
       - { name: archive                     , run: 'tar -czvf ci-results.tar.gz coverage' }
       - name: save
         uses: actions/upload-artifact@v1
@@ -50,11 +50,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: ci
     steps:
-      - name: checkout
-        uses: actions/checkout@v2
-      - name: versi
-        run: ./node_modules/.bin/versi
-      - name: publish
-        run: npm publish
+      - { name: get-versi                   , run:  'npm i versi'             }
+      - { name: checkout                    , uses: actions/checkout@v2       }
+      - { name:   versi                     , run:  ./node_modules/.bin/versi }
+      - name:   publish
+        run:    npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.PACKAGE_PUBLISH_TOKEN}}
