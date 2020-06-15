@@ -44,3 +44,19 @@ jobs:
         with:
           name: ci-results.os-${{ matrix.os }}.node-${{ matrix.node }}.mongo-${{ matrix.mongo }}.redis-${{ matrix.redis }}
           path: ci-results.tar.gz
+      - name: coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          flag-name: ci-results.os-${{ matrix.os }}.node-${{ matrix.node }}.mongo-${{ matrix.mongo }}.redis-${{ matrix.redis }}
+          parallel: true
+
+  coveralls-end:
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: coveralls-end
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
