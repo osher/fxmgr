@@ -7,6 +7,6 @@ describe('lib/fixture', () => {
   })
 
   describe('when called with valid options', () => {
-
+    it
   })
 })

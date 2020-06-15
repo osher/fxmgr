@@ -27,5 +27,12 @@ module.exports = require('../../../../') //i.e - require('fxmgr')
       fname: 'John',
       lname: 'Snow',
     },
+    johnMalcowitch: {
+      '~': { db: 'mustEql' },
+      id: 'johnMalcowitch',
+      fname: 'John',
+      lname: 'Malcowitch',
+    },
+
   },
 })

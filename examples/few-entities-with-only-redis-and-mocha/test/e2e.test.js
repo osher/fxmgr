@@ -47,6 +47,7 @@ describe('end to end', () => {
         'enti:persons',
         'pers:john-doe',
         'pers:john-snow',
+        'pers:johnMalcowitch',
       ])
     })
   })

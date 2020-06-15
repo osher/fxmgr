@@ -10,11 +10,24 @@ const fxMongo = mongo(mongoConfig).useData({
   persons: persons.stores.db,
 })
 
+const stores = [fxMongo, fxRedis]
+
 module.exports = {
   mongo: fxMongo,
   redis: fxRedis,
   fx: { persons },
-  seed: () => Promise.all([fxMongo, fxRedis].map(fx => fx.seed())),
-  beforeAll: () => Promise.all([fxMongo, fxRedis].map(fx => fx.beforeAll())),
-  afterAll: () => Promise.all([fxMongo, fxRedis].map(fx => fx.afterAll())),
+  seed: () => all(stores, 'seed'),
+  beforeAll: () => all(stores, 'beforeAll'),
+  afterAll: () => all(stores, 'afterAll'),
+}
+
+function all(stores, op) {
+  const errors = []
+  return Promise.all(stores.map(store =>
+    store[op]().catch(e => errors.push(e) && null)))
+  .then(res => errors.length
+    ? Promise.reject(Object.assign(new Error('one or more stores setup failed'), {
+        errors: errors.map(e => ({ message: e.message, ...e })),
+      }))
+    : res)
 }
