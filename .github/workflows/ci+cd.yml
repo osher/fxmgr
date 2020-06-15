@@ -1,4 +1,4 @@
-name: master-ci+Cd
+name: master-ci+cd
 
 on:
   push:
