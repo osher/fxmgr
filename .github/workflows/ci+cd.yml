@@ -54,6 +54,15 @@ jobs:
       - { name: get-versi                   , run:  'npm i versi --no-save'   }
       - { name: versi                       , run:  ./node_modules/.bin/versi }
       - name:   publish
-        run:    echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc && npm publish
+        run: |
+          COMMIT_MSG=$(git log | head -n 5 | tail -n 1)
+          if [[ $COMMIT_MSG == *"no-publish"* ]]; then
+            echo "
+              Publishing disabled by user comment:
+                $COMMIT_MSG
+            "
+          else
+            echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc && publish
+          fi
         env:
           NPM_TOKEN: ${{ secrets.PACKAGE_PUBLISH_TOKEN }}
