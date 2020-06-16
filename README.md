@@ -3,9 +3,31 @@
 Fixture managr for integration and end-to-end tests.
 
 ## status
-![master-ci+cd](https://github.com/osher/fxmgr/workflows/master-ci+cd/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/osher/fxmgr/badge.svg?branch=master)](https://coveralls.io/github/osher/fxmgr?branch=master)
+
+[![npm version](https://img.shields.io/npm/v/fxmgr.svg?style=flat)](https://www.npmjs.com/package/fxmgr)
+[![master-ci+cd](https://github.com/osher/fxmgr/workflows/master-ci+cd/badge.svg)](https://github.com/osher/fxmgr/actions)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fosher%2Ffxmgr.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fosher%2Ffxmgr?ref=badge_shield)
+[![Known Vulnerabilities](https://snyk.io/test/github/osher/versi/badge.svg?targetFile=package.json)](https://snyk.io/test/github/osher/versi?targetFile=package.json)
+[![Coverage Status](https://coveralls.io/repos/github/osher/fxmgr/badge.svg?branch=master)](https://coveralls.io/github/osher/fxmgr?branch=master)
+
+## Overview
+
+In a nutshell:
+ 1. all fixtures for all your e2e tests are set **once** before your tests are run
+ 2. fixture data is validated before tests start
+ 3. during tests - access fixture data programatically and synchronously so you
+   can:
+    - proivde API calls ids and values which are part of the fixture
+    - assert that APIs returned the expected values
+ 4. all fixtures are cleaned up **once** after all tests have run
+ 5. crucial entities are validated to have not been damaged by your tests (useful
+    when you have to use a shared environment)
+
+From all the above - 1,2,4,5 - are done for you by `fxmgr`.
+
+All you have to do is define your fixtures and their projections onto the
+relevant stores, and connect the setup/teardown hooks - and you can both relay
+on the fixture data to be in the stores, and use it programatically in tests.
 
 ## installation
 
@@ -74,6 +96,21 @@ module.exports = require('fxmgr').fixture({
   },
 })
 ```
+
+What are cases?
+  - a case is a data-entity used by end-to-end tests to proof a user-story or a
+    use-case.
+  - this data-entity may be represented by one entry or more in one or more 
+    stores.
+  - ideally, each case in the fixture should be dedicated to specific tests of 
+    specific user-stories. This is an absolute must for user-stories that 
+    manipulate data in order to guarantee that when the code accesses the data
+    as part of the test - the test can rely on the state of the data entries.
+  - It's OK to have few tests share the same data entities if none of them
+    mutates any data records. This is often useful to create records that 
+    describe real world entities with real-world names and structure that get
+    to become eventually a part of the organzation's DSL. However, they should
+    not be used in tests that mutate them.
 
 What are case types?
 
