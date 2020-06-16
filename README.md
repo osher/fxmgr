@@ -100,14 +100,14 @@ module.exports = require('fxmgr').fixture({
 What are cases?
   - a case is a data-entity used by end-to-end tests to proof a user-story or a
     use-case.
-  - this data-entity may be represented by one entry or more in one or more 
+  - this data-entity may be represented by one entry or more in one or more
     stores.
-  - ideally, each case in the fixture should be dedicated to specific tests of 
-    specific user-stories. This is an absolute must for user-stories that 
+  - ideally, each case in the fixture should be dedicated to specific tests of
+    specific user-stories. This is an absolute must for user-stories that
     manipulate data in order to guarantee that when the code accesses the data
     as part of the test - the test can rely on the state of the data entries.
   - It's OK to have few tests share the same data entities if none of them
-    mutates any data records. This is often useful to create records that 
+    mutates any data records. This is often useful to create records that
     describe real world entities with real-world names and structure that get
     to become eventually a part of the organzation's DSL. However, they should
     not be used in tests that mutate them.
@@ -245,16 +245,24 @@ Please check the examples provided here. They work - they are ran within our CI.
 [here]('./examples')
 
 ## Roadmap
+
 `[v]` 0.6.x - This is the preliminary version. Tested manually. Works, however
     violent - i.e could be much more friendly with its errors.
+    focus in adding tests, CI, linting, coverage and README.
 
-`[ ]` 0.8.x - will focus in adding tests, CI, linting, coverage.
+`[ ]` 0.8.x - will be on user-experience - i.e killing TBDs and not-Implemented
+    errors, apply user-input validations, more friendly errors, and better API
+    that lets you write less and gain more.
 
-`[ ]` 1.0.x - will be released with focus on user-experience - i.e user-input
-    validations and more friendly errors.
-    API form changes may occur up until this version.
+`[ ]` 1.0.x - will be released upon all API issues will be resolved.
+   A good time to assume that API changes are not expected is after we have a
+   working a stable db adapter for sql dbs (mssql, mysql, postgres, etc), either
+   as part of this project, or as an appendable plugin.
+   Breaking API form changes may occur up until this version, after which the
+   next Major release will hopefully be very far.
 
 ## Backlog
+
 Anything from the backlog that will be ready for a version - will be released
 with it.
 - a built-in cli tool that lets you run
@@ -264,3 +272,8 @@ with it.
 - redis adapter implements only dataType `strings`. Need to support `hashes`,
   `lists`, `sets`, and `sortedSets`
 - add an sql adapter implementation, probably based on `knex`
+
+
+## License
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fosher%2Ffxmgr.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fosher%2Ffxmgr?ref=badge_large)
