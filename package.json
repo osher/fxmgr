@@ -1,6 +1,6 @@
 {
   "name": "fxmgr",
-  "version": "0.6.3",
+  "version": "0.8.0",
   "description": "fixture-setup helper, designed mainly for bdd test-runners, (but not exclusively)",
   "main": "lib/index.js",
   "directories": {
@@ -43,7 +43,9 @@
     "should": "^13.2.3",
     "versi": "^0.6.5"
   },
-  "dependencies": {},
+  "dependencies": {
+    "require-yml": "^2.0.0"
+  },
   "eslintConfig": {
     "extends": "./node_modules/eslint-min"
   },
