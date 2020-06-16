@@ -102,7 +102,7 @@ describe('e2e examples', () => {
     })
   })
 
-  describe('smaller persons - no test runner, with mongodb only', () => {
+  describe('smaller persons - no test runner, with mongodb only, using $oid', () => {
     const cwd = './examples/persons-with-mongodb'
     describe('when ran without seeding', () => {
       const ctx = {}
@@ -143,7 +143,7 @@ describe('e2e examples', () => {
         it('should list the actual - as lists of ids or props that were not found', () => {
           Should(ctx.parsed)
           .property('actual')
-          .eql({ byId: [1], byProps: [] })
+          .eql({ byId: ['000000000000000000000001'], byProps: [] })
         })
       })
     })
