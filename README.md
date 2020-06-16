@@ -5,6 +5,7 @@ Fixture managr for integration and end-to-end tests.
 ## status
 ![master-ci+cd](https://github.com/osher/fxmgr/workflows/master-ci+cd/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/osher/fxmgr/badge.svg?branch=master)](https://coveralls.io/github/osher/fxmgr?branch=master)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fosher%2Ffxmgr.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fosher%2Ffxmgr?ref=badge_shield)
 
 ## installation
 
@@ -226,3 +227,7 @@ with it.
 - redis adapter implements only dataType `strings`. Need to support `hashes`,
   `lists`, `sets`, and `sortedSets`
 - add an sql adapter implementation, probably based on `knex`
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fosher%2Ffxmgr.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fosher%2Ffxmgr?ref=badge_large)
