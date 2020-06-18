@@ -242,7 +242,7 @@ describe('my cool person server', () => {
 
 Please check the examples provided here. They work - they are ran within our CI.
 
-[here]('./examples')
+[here](./examples)
 
 ## Roadmap
 
