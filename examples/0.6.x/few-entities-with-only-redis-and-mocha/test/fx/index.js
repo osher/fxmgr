@@ -1,4 +1,4 @@
-const { redis: redisFcty } = require('../../../../') //require('fxmgr')
+const { redis: redisFcty } = require('../../../../../') //require('fxmgr')
 const { redis: redisConfig } = require('../../config')
 
 const entities = require('./entities')

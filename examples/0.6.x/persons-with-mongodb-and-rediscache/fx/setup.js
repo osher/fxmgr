@@ -1,4 +1,4 @@
-const { redis, mongo } = require('../../../') //require('fxmgr')
+const { redis, mongo } = require('../../../../') //require('fxmgr')
 const { redis: redisConfig, mongo: mongoConfig } = require('../config')
 
 const persons = require('./persons')

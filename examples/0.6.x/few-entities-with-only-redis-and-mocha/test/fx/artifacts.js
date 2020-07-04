@@ -1,4 +1,4 @@
-module.exports = require('../../../../') //i.e - require('fxmgr')
+module.exports = require('../../../../../') //i.e - require('fxmgr')
 .fixture({
   entity: 'artifact',
   stores: {

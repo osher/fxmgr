@@ -1,2 +1,0 @@
-spec:
-  - examples/few-entities-with-only-redis-and-mocha/test/*.test.js
