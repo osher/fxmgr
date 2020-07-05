@@ -1,6 +1,6 @@
 # fxmgr - fixture manager for e2e tests
 
-Fixture managr for integration and end-to-end tests.
+Fixture manager for integration and end-to-end tests.
 
 ## status
 
