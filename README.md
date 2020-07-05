@@ -1,6 +1,6 @@
 # fxmgr - fixture manager for e2e tests
 
-Fixture managr for integration and end-to-end tests.
+Fixture manager for integration and end-to-end tests.
 
 ## status
 
@@ -242,7 +242,7 @@ describe('my cool person server', () => {
 
 Please check the examples provided here. They work - they are ran within our CI.
 
-[here]('./examples')
+[here](./examples)
 
 ## Roadmap
 
