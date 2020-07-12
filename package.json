@@ -31,10 +31,6 @@
     "url": "https://github.com/osher/fxmgr/issues"
   },
   "homepage": "https://github.com/osher/fxmgr#readme",
-  "peerDependencies": {
-    "mongodb": ">=3.5.7",
-    "async-redis": ">=1.1.7"
-  },
   "devDependencies": {
     "async-redis": "^1.1.7",
     "eslint": "^7.2.0",
@@ -48,6 +44,8 @@
     "versi": "^0.6.5"
   },
   "dependencies": {
+    "async-redis": ">=1.1.7",
+    "mongodb": ">=3.5.7",
     "require-yml": "^2.0.0"
   },
   "eslintConfig": {

@@ -168,15 +168,15 @@ describe('lib/init', () => {
         it('tbd')
       })
 
-      describe('with fixturesDir as path', () => {
-        const fixturesDir = 'some/path'
+      describe('with loadFixtures as path', () => {
+        const loadFixtures = 'some/path'
 
         const ctx = {}
         before(() => {
           try {
             SUT.init({
               //name --> defaults to 'default'
-              fixturesDir,
+              loadFixtures,
 
               //test-injection:
               load: paths => (ctx.loadedPaths = paths) && minimalValidOptions.fixtures,
@@ -192,7 +192,7 @@ describe('lib/init', () => {
         })
 
         it('should load with require-yml, passing it the path as a single-element array', () => {
-          Should(ctx.loadedPaths).eql([fixturesDir])
+          Should(ctx.loadedPaths).eql(loadFixtures)
         })
       })
 

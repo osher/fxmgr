@@ -22,6 +22,7 @@ jobs:
     timeout-minutes:  10
     steps:
       - { name: checkout                    , uses: actions/checkout@v2 }
+      - { name: get-versi                   , run:  'npm i versi --no-save'   }
       - name: node v${{ matrix.node }}
         uses: actions/setup-node@v2-beta
         with:

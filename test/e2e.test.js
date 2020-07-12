@@ -4,6 +4,7 @@ const exec = (cmd, opts) => new Promise(
   (a, r) => execCb(cmd, opts, (err, stdout, stderr) => err ? r(err) : a({ stdout, stderr })),
 )
 
+//connections the test uses to validate stores
 const mongo = require('../lib/test-db-mongo')({ url: 'mongodb://localhost:27017' })
 const redis = require('../lib/test-db-redis')()
 const dropCol = name => mongo
@@ -135,22 +136,16 @@ describe('e2e examples', () => {
 
           it('should have clear message about missing entities', () => {
             Should(ctx.parsed)
-            .property('errors')
-            .property('0')
             .property('message')
             .match(/mustExist assertion - missing mandatory entries in db/)
           })
           it('should list the expected and as empty lists', () => {
             Should(ctx.parsed)
-            .property('errors')
-            .property('0')
             .property('expected')
             .eql({ byId: [], byProps: [] })
           })
           it('should list the actual - as lists of ids or props that were not found', () => {
             Should(ctx.parsed)
-            .property('errors')
-            .property('0')
             .property('actual')
             .eql({ byId: ['000000000000000000000001'], byProps: [] })
           })
@@ -200,8 +195,8 @@ describe('e2e examples', () => {
       before(async () => {
         //arrange
         await Promise.all([
-           dropCol('persons'),
-           redis.client.flushdb(),
+          dropCol('persons'),
+          redis.client.flushdb(),
         ])
         await redis.client.mset('pers:johnMalcowitch', JSON.stringify({
           id: 'johnMalcowitch',
@@ -314,6 +309,56 @@ describe('e2e examples', () => {
               '',
             ].join('\n'),
           })
+        })
+      })
+    })
+
+    describe('using fixtures folders with require-yml 2.0 style', () => {
+      const cwd = 'examples/0.8.x/using-fixtures-folder-with-require-yml2.0-style'
+      const cmd = `node ./node_modules/mocha/bin/mocha --config ${cwd}/.mocharc.yaml --reporter min`
+      describe('when run without seeding', () => {
+        const ctx = {}
+        before(async () => {
+          //arrange
+          await redis.client.flushdb()
+
+          //act
+          try {
+            ctx.test = await exec(cmd)
+          } catch (e) {
+            ctx.err = e
+          }
+        })
+
+        it('should fail with an error', () => Should(ctx.err).be.an.Error())
+      })
+
+      describe('when run on a seeded db', () => {
+        const ctx = {}
+        before(async () => {
+          //arrange
+          await redis.client.flushdb()
+
+          await redis.client.set('pers:johnMalcowitch', JSON.stringify({
+            id: 'johnMalcowitch',
+            name: 'johnMalcowitch',
+            entity: 'persons',
+            fname: 'John',
+            lname: 'Malcowitch',
+          }))
+
+          //act
+          try {
+            ctx.test = await exec(cmd)
+          } catch (e) {
+            ctx.err = e
+          }
+        })
+
+        it('should not fail', () => Should.not.exist(ctx.err))
+
+        it('should execute the suite', () => {
+          Should(ctx.test.stdout).match(/2 passing/)
         })
       })
     })

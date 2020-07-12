@@ -1,15 +1,10 @@
-const fxMgr = require('../../../../') //require('fxmgr')
-const config = require('../config')
+const { mongo: mongoFcty } = require('../../../../') //require('fxmgr')
+const { mongo: mongoConfig } = require('../config')
 
-module.exports = fxMgr.init({
-  fixtures: {
-    persons: require('./persons'),
-  },
-  stores: {
-    db: {
-      type: 'mongo',
-      defaultCase: 'testData',
-      config: config.mongo, //.. ie { url, options: mongoOptions },
-    },
-  },
+const persons = require('./persons')
+
+const mongo = mongoFcty(mongoConfig).useData({
+  persons: persons.stores.db,
 })
+
+module.exports = Object.assign(mongo, { fx: { persons } })

@@ -13,6 +13,6 @@ Promise.resolve()
     return afterAll()
 })
 .catch(e => {
-  console.error(JSON.stringify({ message: e.message, ...e }, { depth: 10, colors: true }))
+  console.error(JSON.stringify({ message: e.message, stack: e.stack.split('\n'), ...e }, { depth: 10, colors: true }))
   process.exitCode = 1
 })

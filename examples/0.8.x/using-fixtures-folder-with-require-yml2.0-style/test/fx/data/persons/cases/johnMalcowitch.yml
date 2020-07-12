@@ -1,0 +1,5 @@
+'~': { db: mustEql }
+
+id: johnMalcowitch
+fname: John
+lname: Malcowitch
