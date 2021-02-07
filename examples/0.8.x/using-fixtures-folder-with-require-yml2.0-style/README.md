@@ -20,4 +20,4 @@ In this case, when the key `loadFixtures` is provided - it's passed to
 fixtures collection.
 
 You can also provide your own loader function if you're disatisfied with the
-`require-yml` default loader.
+`require-yml` default loader by providing `fxmgr.init({ load: (path) => { ... } })` - which ATM should be synchronous.

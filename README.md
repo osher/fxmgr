@@ -192,7 +192,7 @@ const {
     //db: { collection }, // - if we were doing POST/PUT requests, we'd want to see how the DB is changed
     cache           ,       //   but here we do want to see how the cache is affected
   },
-  fixtures: { persons }, //or `fx: { perrsons }` - it's an alias
+  fixtures: { persons }, //or `fx: { persons }` - it's an alias
 } = require('./fx')
 const { setup: runSvr, teardown: stopSvr } = require('./util')
 const request = require('mocha-ui-exports-request') //yes, I know, has become to be a bad name. will change in the future
@@ -282,7 +282,7 @@ with it.
 - redis adapter implements only dataType `strings`. Need to support `hashes`,
   `lists`, `sets`, and `sortedSets`
 - add an sql adapter implementation, probably based on `knex`
-- I also consider moving the test-db adapters to their own modular units...
+- I also consider moving the test-db adapters to their own modular units. For this we'll need to adopt some plugin convention, donno the details yet.
 
 ## License
 

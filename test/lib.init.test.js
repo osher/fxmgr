@@ -22,6 +22,7 @@ describe('lib/init', () => {
         //arrange
         SUT.rm(uninitiaedName)
 
+        //act
         try {
           ctx.val = SUT.of('no-such-name')
         } catch (e) {
