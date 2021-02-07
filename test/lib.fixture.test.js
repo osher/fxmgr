@@ -7,25 +7,47 @@ describe('lib/fixture', () => {
   })
 
   describe('when called with valid options', () => {
-    const ctx = {}
-    before(() => {
-      ctx.res = SUT({
-        cases: {
-          one: { },
-        },
-        stores: {
-          db: { defaultCase: 'ignore' },
-        },
+    describe('with stores', () => {
+      const ctx = {}
+      before(() => {
+        ctx.res = SUT({
+          cases: {
+            one: { },
+          },
+          stores: {
+            db: { defaultCase: 'ignore' },
+          },
+        })
+      })
+      it('should return a fixture object', () => {
+        Should(ctx.res).be.an.Object()
+      })
+      it('inspecting the object will encapsulate the byId, all and stores sets', () => {
+        Should(require('util').inspect(ctx.res))
+        .match(/all: Array< ...all stored forms... >/)
+        .match(/byId: < ...by-id index... >/)
+        .match(/stores: < ...stores data... >/)
       })
     })
-    it('should return a fixture object', () => {
-      Should(ctx.res).be.an.Object()
-    })
-    it('inspecting the object will encapsulate the byId, all and stores sets', () => {
-      Should(require('util').inspect(ctx.res))
-      .match(/all: Array< ...all stored forms... >/)
-      .match(/byId: < ...by-id index... >/)
-      .match(/stores: < ...stores data... >/)
+
+    describe('with no stores', () => {
+      const ctx = {}
+      before(() => {
+        ctx.res = SUT({
+          cases: {
+            one: { },
+          },
+        })
+      })
+      it('should return a fixture object', () => {
+        Should(ctx.res).be.an.Object()
+      })
+      it('inspecting the object will encapsulate the byId, all and stores sets', () => {
+        Should(require('util').inspect(ctx.res))
+        .match(/all: Array< ...all stored forms... >/)
+        .match(/byId: < ...by-id index... >/)
+        .match(/stores: < ...stores data... >/)
+      })
     })
   })
 

@@ -1,0 +1,2 @@
+spec:
+  - examples/0.8.x/using-fixtures-folder-with-require-yml2.0-style/test/*.test.js

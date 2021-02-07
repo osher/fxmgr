@@ -49,23 +49,8 @@ peer-dependencies, and are not installed by default.
 `./test/fx/persons.js`:
 
 ```javascript
-module.exports = require('fxmgr').fixture({
+module.exports = {
   entity: 'person',
-  stores: {
-    db: {
-      type: 'mongo',
-      defaultCase: 'testData',
-      toStoredForm: ({ fname, lname, id }) => ({ fname, lname, id }),
-      saveAs: 'doc',
-    },
-    cache: {
-      type: 'redis',
-      dataType: 'strings',
-      defaultCase: 'reservedEmpty',
-      toStoredForm: ({ fname, lname, id }) => ({ key: `person:${id}`, value: JSON.stringify({ id, fname, lname }) }),
-      saveAs: 'cache',
-    },
-  },
   cases: {
     noSuch: {
       '~': {
@@ -94,7 +79,17 @@ module.exports = require('fxmgr').fixture({
       lname: 'Cidade',
     },
   },
-})
+  stores: {
+    db: {
+      toStoredForm: ({ fname: firstName, lname: lastName, id }) => ({ id, firstName, lastName }),
+      saveAs: 'doc',
+    },
+    cache: {
+      toStoredForm: ({ fname: firstName, lname: lastName, id }) => ({ key: `person:${id}`, value: JSON.stringify({ id, firstName, lastName }) }),
+      saveAs: 'cache',
+    },
+  },
+}
 ```
 
 What are cases?
@@ -106,11 +101,12 @@ What are cases?
     specific user-stories. This is an absolute must for user-stories that
     manipulate data in order to guarantee that when the code accesses the data
     as part of the test - the test can rely on the state of the data entries.
-  - It's OK to have few tests share the same data entities if none of them
-    mutates any data records. This is often useful to create records that
+  - It's OK to have few tests share the same data entities if **none** of them
+    *mutates* any data records. This is often useful to create records that
     describe real world entities with real-world names and structure that get
-    to become eventually a part of the organzation's DSL. However, they should
-    not be used in tests that mutate them.
+    to become eventually a part of the organzation's DSL.
+    However - when doing that, there's the risk that things might break when
+    tests end up mutating these entries despite they should not.
 
 What are case types?
 
@@ -133,39 +129,51 @@ What are case types?
      - does not try to set them up, nor to clean them up
      - they are validated against the desired state specified in the fixture
 
+What are stored forms?
+ - the fixtures are designed in a way that should be easy for you to use in
+   your tests, however, this form might not be the form they are kept in store.
+ - **stored-form** is the form in which it appears in the actual store, mapped
+   from the case entry.
+ - when you provide 'saveAs', the fixture case object is augmented with an
+   additional property by the provided name which holds the mapped stored form.
+
 
 ### 2. Create your setup and teardown sequences
 
 `./test/fx/index.js`, assuming the fixture above, and a config with entries
-for redis and mongo.
+for `redis` and `mongo`.
 
 This example uses the `config` package, and expect the config to expose the
-configs for both mongo and redis as root keys, however, you can do it anyhow you
-like...
+configs for both `mongo` and `redis` as root keys, however, you can do it anyhow you
+like.
 
 ```javascript
-const { redis, mongo } = require('fxmgr')
 const { redis: redisConfig, mongo: mongoConfig } = require('config')
-
-const persons = require('./persons')
-
-const fxRedis = redis(redisConfig).useData({
-  persons: persons.stores.cache,
+module.exports = require('fxmgr').init({
+  stors: {
+    db: {
+      type: 'mongo',
+      defaultCase: 'testData',
+      config: mongoConfig,
+    },
+    cache: {
+      type: 'redis',
+      dataType: 'strings',
+      defaultCase: 'reservedEmpty',
+      config: redisConfig,
+    }
+  },
+  fixtures: {
+    persons: require('./persons'),
+  }
 })
-const fxMongo = mongo(mongoConfig).useData({
-  persons: persons.stores.db,
-})
-
-module.exports = {
-  mongo: fxMongo,
-  redis: fxRedis,
-  fx: { persons },
-  seed: () => Promise.all([fxMongo, fxRedis].map(fx => fx.seed())),
-  beforeAll: () => Promise.all([fxMongo, fxRedis].map(fx => fx.beforeAll())),
-  afterAll: () => Promise.all([fxMongo, fxRedis].map(fx => fx.afterAll())),
-}
-
 ```
+
+The init returns an object with:
+  - `beforeAll` and `afterAll` hooks,
+  - `seed` method
+  - `fixtres` collection (also available as `fx`)
+  - `stores` collection
 
 ### 3. Use your setup in tests
 
@@ -180,9 +188,11 @@ const Should = require('should')
 const {
   beforeAll,
   afterAll,
-  //mongo: { collection }, // - if we were doing POST/PUT requests, we'd want to see how the DB is changed
-  redis           ,       //   but here we do want to see how the cache is affected
-  fx: { persons },
+  stores: {
+    //db: { collection }, // - if we were doing POST/PUT requests, we'd want to see how the DB is changed
+    cache           ,       //   but here we do want to see how the cache is affected
+  },
+  fixtures: { persons }, //or `fx: { persons }` - it's an alias
 } = require('./fx')
 const { setup: runSvr, teardown: stopSvr } = require('./util')
 const request = require('mocha-ui-exports-request') //yes, I know, has become to be a bad name. will change in the future
@@ -228,7 +238,7 @@ describe('my cool person server', () => {
         },
         and: {
           'should update the entry in cache': async () => {
-            const cached = await redis.client.get(persons.johnDoe.cache.key)
+            const cached = await cache.client.get(persons.johnDoe.cache.key)
             Should(cached).eql(persons.johnDoe.cache.value)
           },
         },
@@ -238,7 +248,7 @@ describe('my cool person server', () => {
 })
 ```
 
-## examples
+## more examples
 
 Please check the examples provided here. They work - they are ran within our CI.
 
@@ -272,7 +282,7 @@ with it.
 - redis adapter implements only dataType `strings`. Need to support `hashes`,
   `lists`, `sets`, and `sortedSets`
 - add an sql adapter implementation, probably based on `knex`
-
+- I also consider moving the test-db adapters to their own modular units. For this we'll need to adopt some plugin convention, donno the details yet.
 
 ## License
 
