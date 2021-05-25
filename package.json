@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/osher/fxmgr#readme",
   "devDependencies": {
-    "async-redis": "^1.1.7",
+    "async-redis": "^2.0.0",
     "eslint": "^7.2.0",
     "eslint-min": "^0.8.6",
     "husky": "^4.2.5",
@@ -44,7 +44,7 @@
     "versi": "^0.6.5"
   },
   "dependencies": {
-    "async-redis": ">=1.1.7",
+    "async-redis": ">=2.0.0",
     "mongodb": ">=3.5.7",
     "require-yml": "^2.0.0"
   },
